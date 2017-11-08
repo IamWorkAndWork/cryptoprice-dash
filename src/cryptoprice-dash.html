@@ -2,7 +2,9 @@
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/paper-spinner/paper-spinner-lite.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
-
+<link rel="import" href="../bower_components/paper-styles/typography.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 
 
 <script src="../bower_components/chart.js/dist/Chart.js"></script>
@@ -11,6 +13,54 @@
 <dom-module id="cryptoprice-dash">
     <template>
     <style>
+            :host {
+                display: block;
+                font-family: 'Roboto';
+                --paper-cryptocurrency-primary-text-color: #0667D0;
+            }
+            h2 {
+                color: #0667D0;
+                @apply --layout-horizontal;
+                @apply --layout-center-center;
+            }
+            a {
+                color: #0667D0;
+                text-decoration: none;
+            }
+            .content {
+                margin-bottom: 20px;
+                padding: 0 16px;
+                @apply --layout-horizontal;
+                @apply --layout-center-center;
+            }
+            .header {
+                @apply --layout-horizontal;
+                @apply --layout-center;
+            }
+            .currency {
+                /*@apply --paper-font-headline;*/
+                @apply --paper-font-common-nowrap;
+                color: var(--paper-cryptocurrency-primary-text-color);
+                font-weight: 300;
+            }
+            paper-spinner-lite {
+                /*@apply --layout-fit;*/
+                display: none;
+                margin: auto;
+                z-index: 2;
+                height: 70px;
+                width: 70px;
+                --paper-spinner-color: var(--paper-cryptocurrency-spinner-color, #2196F3);
+                --paper-spinner-stroke-width: var(--paper-cryptocurrency-spinner-width, 5px);
+                @apply --paper-cryptocurrency-spinner;
+            }
+            paper-spinner-lite[active] {
+                display: block;
+            }
+            .lineChart {
+                width: 100%
+            }
+
         paper-button {
             font-family: 'Roboto', 'Noto', sans-serif;
             font-weight: normal;
@@ -18,29 +68,41 @@
             -webkit-font-smoothing: antialiased;
         }
         paper-button.indigo {
-        background-color: var(--paper-indigo-500);
-        color: white;
-            --paper-button-raised-keyboard-focus: {
-            background-color: var(--paper-pink-a200) !important;
-            color: white !important;
-        };
+            background-color: var(--paper-indigo-500);
+            color: white;
+                --paper-button-raised-keyboard-focus: {
+                background-color: var(--paper-pink-a200) !important;
+                color: white !important;
+            };
   }
     </style>
-    <h2>Hello Cryptoprice</h2>
 
-    <iron-ajax id="coinbase" handler-as="json" on-response="_handlerResponse" loading={{loading}}></iron-ajax>
+<iron-ajax id="coinbase" handler-as="json" on-response="_handlerResponse" loading={{loading}}></iron-ajax>
 
+
+     <h2>CryptoCurrency Price</h2>
+
+   
     <paper-spinner-lite active={{loading}} ></paper-spinner-lite>
 
     <div hidden$="[[loading]]">
-            <template is="dom-repeat" items="[[currencies]]">
-                    <!-- <p> [[index]]. [[item.code]] - [[item.name]] - [[item.price]]</p> -->
+            <!-- <template is="dom-repeat" items="[[currencies]]">
                     <paper-button on-click="_getCurrencyHistoricData" data-item$="[[item.code]]" raised class="indigo">[[index]]. [[item.code]] - [[item.name]] - [[item.price]]</paper-button>
-                    
-             </template>
+             </template> -->
+    <div class="content">
+        <div class="header">
+            <template is="dom-repeat" items="[[currencies]]">
+                <div class="currency">
+                    <paper-button class="indigo" noink on-click="_getCurrencyHistoricData" data-item$="[[item.code]]">
+                        [[item.name]] - $[[item.price]]
+                    </paper-button>
+                </div>
+            </template>
+        </div>
+    </div>
     </div>
 
-    <br>
+    <!-- <br> -->
 
     <div hidden=[[loading]] style="width: 100%;max-width: 700px;margin: 0 auto">
         <canvas height="2" width="4" id="canvas"></canvas>
